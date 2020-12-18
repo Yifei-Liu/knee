@@ -13,7 +13,7 @@ import numpy as np
 from rdp import rdp
 from kneedle import auto_knee
 import matplotlib.pyplot as plt
-
+from timeit import default_timer as timer
 #import cProfile
 
 
@@ -81,7 +81,9 @@ def main(args):
     ax5.set_xticklabels([])
     ax5.text(.5,.9,'Knees',horizontalalignment='center', transform=ax5.transAxes)
 
+    final_points_cnt = 0
     for i in values['knees']:
+        final_points_cnt += 1
         ax5.axvline(xpoints_reduced[i], color='r')
 
     plt.subplots_adjust(wspace=0, hspace=0)
@@ -90,13 +92,31 @@ def main(args):
     plt.savefig(filename, transparent = True, bbox_inches = 'tight', pad_inches = 0, dpi = 300)
     print('Plotting...')
     plt.show()
-
+    return len(points), len(points_reduced), space_saving, final_points_cnt
 
 if __name__ == '__main__':
+    start = timer()
     parser = argparse.ArgumentParser(description='Knee testing app')
     parser.add_argument('-i', type=str, required=True, help='input file')
     parser.add_argument('-r', type=float, help='R2', default=0.95)
     #parser.add_argument('-o', type=str, help='output file')
     args = parser.parse_args()
     
-    main(args)
+    len_points, len_points_reduced, space_saving, final_points_cnt = main(args)
+    end = timer()
+    time_elapsed = end - start
+    csv_filepath = args.i    
+    print('Filepath: {} Time in seconds (time_elapsed): {}'.format(csv_filepath, time_elapsed))
+    log_filename = os.path.split(csv_filepath)[1]
+    log_filename = log_filename.split('.')[0] + '.log'
+    log_path =  os.path.split(csv_filepath)[0]
+    log_filepath = os.path.join(log_path, log_filename)
+    if os.path.exists(log_filepath):
+        os.remove(log_filepath)
+    log_file_obj = open(log_filepath, 'a')
+    log_file_obj.write('Point selection time elapsed: '+ str(time_elapsed) + '\n')
+    log_file_obj.write('All points number: ' + str(len_points) + '\n')
+    log_file_obj.write('RDP reduced points number: ' + str(len_points_reduced) + '\n')
+    log_file_obj.write('Space saving: ' + str(space_saving) + '\n')
+    log_file_obj.write('Final selected points number: ' + str(final_points_cnt) + '\n')
+    log_file_obj.close()
