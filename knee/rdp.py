@@ -9,7 +9,7 @@ __status__ = 'Development'
 import numpy as np
 import math
 
-
+#Is this method most efficient to calculate perpendicular distance?
 def perpendicular_distance(pt, start, end):
     d = end - start
 
@@ -51,6 +51,8 @@ def rdp(points, r=0.95):
     else:
         determination = 1.0 - ssreg
 
+    # < or > ???
+    #the r parameter is not consistent with the threshold in classic Ramer–Douglas–Peucker algorithm
     if determination < r :
         left = rdp(points[0:index+1], r)
         right = rdp(points[index:end+1], r)
@@ -65,3 +67,9 @@ def rdp(points, r=0.95):
 #points = np.array([[0.0, 0.0], [1.0, 2.0], [1.2, 4.0], [2.3, 6], [2.9, 8], [5, 10]])
 #sp = rdp(points)
 #print(sp)
+
+#start = np.array([1.0, 1.0])
+#end = np.array([5.0, 3.0])
+#pt = np.array([3.0, 0.0])
+#dist_res = perpendicular_distance(pt, start, end)
+#print("dist_res: ", dist_res)

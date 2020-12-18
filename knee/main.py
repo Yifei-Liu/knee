@@ -13,6 +13,7 @@ import numpy as np
 from rdp import rdp
 from kneedle import auto_knee
 import matplotlib.pyplot as plt
+from timeit import default_timer as timer
 
 
 def main(args):
@@ -85,9 +86,12 @@ def main(args):
 
 
 if __name__ == '__main__':
+    start = timer()
     parser = argparse.ArgumentParser(description='Knee testing app')
     parser.add_argument('-i', type=str, required=True, help='input file')
     parser.add_argument('-r', type=float, help='R2', default=0.95)
     #parser.add_argument('-o', type=str, help='output file')
     args = parser.parse_args()
     main(args)
+    end = timer()
+    print("Time in seconds: ", end - start)
