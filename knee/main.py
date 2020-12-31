@@ -29,7 +29,7 @@ class Method(Enum):
         return self.value
 
 
-def plot_kneedle(args, points, points_reduced, values):
+def plot_kneedle(args, points, points_reduced, values, plot_filename=''):
     fig, ((ax0, ax1), (ax2, ax3), (ax4, ax5)) = plt.subplots(3,2)
     
     xpoints = np.transpose(points)[0]
@@ -79,7 +79,7 @@ def plot_kneedle(args, points, points_reduced, values):
 
     plt.subplots_adjust(wspace=0, hspace=0)
     plt.margins(0, 0)
-    filename = os.path.splitext(args.i)[0]+'.pdf'
+    filename = os.path.splitext(args.i)[0]+plot_filename+'.pdf'
     plt.savefig(filename, transparent = True, bbox_inches = 'tight', pad_inches = 0, dpi = 300)
     print('Plotting...')
     plt.show()
@@ -166,7 +166,7 @@ def main(args):
     knees = None
     if args.m is Method.kneedle:
         knees = auto_knee(points_reduced, debug=True)
-        plot_kneedle(args, points, points_reduced, knees)
+        plot_kneedle(args, points, points_reduced, knees, '')
     elif args.m is Method.lmethod:
         plot_lmethod(args, points, points_reduced, knee(points_reduced, debug=True))
     
